@@ -12,14 +12,22 @@ class CreateCartsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {   
+        Schema::dropIfExists('carts');
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id'); 
-            $table->integer('post_id');
+            $table->bigInteger('post_id')->unsigned();
             $table->timestamps();
+          //  $table->index('post_id');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+         
+
+
         });
-    }
+    }  
+
+        
 
     /**
      * Reverse the migrations.
@@ -29,5 +37,7 @@ class CreateCartsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('carts');
+       
+          
     }
 }
