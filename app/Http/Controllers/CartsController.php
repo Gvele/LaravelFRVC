@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Post;
 use App\Models\user;
+use Illuminate\Support\Facades\DB;
 
 class CartsController extends Controller
 {
@@ -17,12 +18,21 @@ class CartsController extends Controller
     public function index()
     {
         $user_id=auth()->user()->id;
-        $carts= Cart::select("*")->where("user_id", "=", $user_id )->get();
+        $carts= DB::table('carts')
+        ->select( "post_id", DB::raw('count(*) as total'))
+        ->where("user_id", "=", $user_id)
+        ->groupBy(  "post_id")
+        ->get();
+        
+          //dd($carts); 
+        
         $posts=array(); 
-        foreach($carts as $cart) {
-            $posts[]= Post::find($cart->post_id);
-        }
-       //dd($posts) ; 
+          foreach($carts as  $cart) {
+              $posts[]=[Post::find($cart->post_id),$cart->total]   ;
+            
+          }
+        
+            //dd($posts) ; 
         return view('carts.index')->with('posts', $posts); 
     }
 
@@ -74,7 +84,7 @@ class CartsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource. 
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -113,8 +123,25 @@ class CartsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($postid)
     {
         //
+      // dd($postid);
+
+        $cart= Cart::where([
+            ['post_id', '=', $postid],
+            ['user_id', '=', auth()->user()->id]
+          ])->first(); 
+        
+          //dd($cart); 
+        //Check for correct user
+        if(auth()->user()->id !== $cart->user_id)
+        {
+            return redirect('/carts')->with('error', 'Unauthorized page!'); 
+        }
+        
+        $cart->delete(); 
+        return redirect('/carts')->with('success','Post Deleted!');
+     
     }
 }

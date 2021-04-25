@@ -10,6 +10,10 @@
             {{Form::text('title', '', ['class'=>'form-control', 'placeholder'=>'Title'])}}
          </div>  
          <div class="form-group">
+            {{Form::label('price', 'Price')}}
+            {{Form::number('price', '', ['class'=>'form-control', 'placeholder'=>'Price'  ,'step'=>'0.01'])}}
+         </div>
+         <div class="form-group">
             {{Form::label('description', 'Description')}}
             {{Form::textarea('description', '', ['class'=>'form-control', 'placeholder'=>'Description'])}}
          </div> 

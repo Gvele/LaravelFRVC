@@ -7,8 +7,11 @@
          @foreach ($posts as $post)
          <div class="card card-body  mb-1 ">
           <h3><a href="/posts/{{$post->id}}"> {{$post->title}}</a></h3>
-          <br> 
+          <br>
+          Price {{$post->price}}
+           <br> 
          Written on {{$post->created_at}} 
+         
          @if(!Auth::guest())
          <div class="col-md-12 bg-light text-right">
           <form action="/carts" method="POST">

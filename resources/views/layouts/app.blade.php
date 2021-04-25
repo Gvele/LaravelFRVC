@@ -42,20 +42,17 @@
                           <li class="nav-item">
                             <a class="nav-link" href="{{ url('/carts') }}">Carts</a>
                           </li>
-                           
-                           
+                          @auth
+                            <li class="nav-item">
+                                <a class="nav-link text-primary"  href="{{ url('/accountStatus') }}"> {{ auth()->user()->account_status == 0 ? "Enable" : "Disable" }} your account</a>                                    
+                            </li>  
+                          @endauth
                          </ul>
-                         
                       </div>
                     </div>
                   </nav>
-
-
-
-
-
-
-
+                  
+                  
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->

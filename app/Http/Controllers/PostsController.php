@@ -18,20 +18,11 @@ class PostsController extends Controller
         //
         //$posts=Post::orderBy('created_at', 'desc')->get(); 
         $posts=Post::orderBy('created_at', 'desc')->paginate(10);
+        //dd($posts); 
         return view('posts.index')->with('posts', $posts); 
 
     }
-
-        /**
-         * Create a new controller instance.
-         *
-         * @return void
-         */
-        public function __construct()
-        {
-            $this->middleware('auth', ['except'=> ['index', 'show'] ]);
-        }
-
+ 
 
 
 
@@ -57,13 +48,15 @@ class PostsController extends Controller
     {
        $this->validate($request,[ 
             'title' =>'required|max:255',
-            'description'=>'required'
+            'description'=>'required',
+            'price'=>'required'
        ]); 
        
        $post= new Post(); 
        $post->title=$request->input('title'); 
        $post->description=$request->input('description'); 
-       $post->user_id=auth()->user()->id; 
+       $post->user_id=auth()->user()->id;
+       $post->price=$request->input('price');
        $post->save(); 
         return redirect('/posts')->with('success','Post created!'); 
     }
@@ -110,13 +103,15 @@ class PostsController extends Controller
     {
         $this->validate($request,[ 
             'title' =>'required|max:255',
-            'description'=>'required'
+            'description'=>'required', 
+            'price'=>'required'
        ]); 
 
 
        $post= Post::find($id); 
        $post->title=$request->input('title'); 
        $post->description=$request->input('description'); 
+       $post->price=$request->input('price');
        $post->save(); 
         return redirect('/posts')->with('success','Post Updated!'); 
     }
@@ -131,7 +126,7 @@ class PostsController extends Controller
     {
         $post= Post::find($id); 
         
-//Check for correct user
+        //Check for correct user
         if(auth()->user()->id !== $post->user_id)
         {
             return redirect('/posts')->with('error', 'Unauthorized page!'); 
